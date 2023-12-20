@@ -2,8 +2,10 @@ package com.hendisantika.videostreaming.controller;
 
 import com.hendisantika.videostreaming.service.VideoStreamService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,4 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class VideoStreamController {
 
     private final VideoStreamService videoStreamService;
+
+    @GetMapping("/stream/{fileType}/{fileName}")
+    public Mono<ResponseEntity<byte[]>> streamVideo(ServerHttpResponse serverHttpResponse, @RequestHeader(value = "Range", required = false) String httpRangeList,
+                                                    @PathVariable("fileType") String fileType,
+                                                    @PathVariable("fileName") String fileName) {
+        return Mono.just(videoStreamService.prepareContent(fileName, fileType, httpRangeList));
+    }
 }
