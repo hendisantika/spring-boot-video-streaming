@@ -137,4 +137,19 @@ public class VideoStreamService {
                 .map(this::sizeFromFile)
                 .orElse(0L);
     }
+
+    /**
+     * Getting the size from the path.
+     *
+     * @param path Path.
+     * @return Long.
+     */
+    private Long sizeFromFile(Path path) {
+        try {
+            return Files.size(path);
+        } catch (IOException ioException) {
+            log.error("Error while getting the file size", ioException);
+        }
+        return 0L;
+    }
 }
