@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.hendisantika.videostreaming.config.ApplicationConstants.*;
 import static jdk.jfr.internal.SecuritySupport.getFileSize;
@@ -68,10 +71,25 @@ public class VideoStreamService {
                     .header(CONTENT_RANGE, BYTES + " " + rangeStart + "-" + rangeEnd + "/" + fileSize)
                     .body(data);
         } catch (IOException e) {
-            logger.error("Exception while reading the file {}", e.getMessage());
+            log.error("Exception while reading the file {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
 
-
+    /**
+     * ready file byte by byte.
+     *
+     * @param filename String.
+     * @param start    long.
+     * @param end      long.
+     * @return byte array.
+     * @throws IOException exception.
+     */
+    public byte[] readByteRangeNew(String filename, long start, long end) throws IOException {
+        Path path = Paths.get(getFilePath(), filename);
+        byte[] data = Files.readAllBytes(path);
+        byte[] result = new byte[(int) (end - start) + 1];
+        System.arraycopy(data, (int) start, result, 0, (int) (end - start) + 1);
+        return result;
     }
 }
