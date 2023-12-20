@@ -13,9 +13,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static com.hendisantika.videostreaming.config.ApplicationConstants.*;
-import static jdk.jfr.internal.SecuritySupport.getFileSize;
 
 /**
  * Created by IntelliJ IDEA.
@@ -125,4 +125,16 @@ public class VideoStreamService {
         return new File(url.getFile()).getAbsolutePath();
     }
 
+    /**
+     * Content length.
+     *
+     * @param fileName String.
+     * @return Long.
+     */
+    public Long getFileSize(String fileName) {
+        return Optional.ofNullable(fileName)
+                .map(file -> Paths.get(getFilePath(), file))
+                .map(this::sizeFromFile)
+                .orElse(0L);
+    }
 }
