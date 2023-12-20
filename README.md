@@ -12,3 +12,9 @@ Spring framework to Stream the Video
       
       Start the applciation and hit the below url to try it out
       http://localhost:8081/video/stream/mp4/toystory
+
+### Image Screen shot
+
+Toy Story 3
+
+![Toy Story 3](img/toystory.png "Toy Story 3")
