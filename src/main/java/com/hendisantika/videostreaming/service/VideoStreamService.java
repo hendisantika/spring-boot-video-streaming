@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,5 +93,22 @@ public class VideoStreamService {
         byte[] result = new byte[(int) (end - start) + 1];
         System.arraycopy(data, (int) start, result, 0, (int) (end - start) + 1);
         return result;
+    }
+
+
+    public byte[] readByteRange(String filename, long start, long end) throws IOException {
+        Path path = Paths.get(getFilePath(), filename);
+        try (InputStream inputStream = (Files.newInputStream(path));
+             ByteArrayOutputStream bufferedOutputStream = new ByteArrayOutputStream()) {
+            byte[] data = new byte[BYTE_RANGE];
+            int nRead;
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                bufferedOutputStream.write(data, 0, nRead);
+            }
+            bufferedOutputStream.flush();
+            byte[] result = new byte[(int) (end - start) + 1];
+            System.arraycopy(bufferedOutputStream.toByteArray(), (int) start, result, 0, result.length);
+            return result;
+        }
     }
 }
